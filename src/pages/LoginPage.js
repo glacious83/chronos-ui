@@ -1,18 +1,26 @@
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
 import LoginForm from '../components/LoginForm';
+import {UserContext} from "../context/UserContext";
+import axiosInstance from "../services/axiosInstance";
 
 function LoginPage() {
     const navigate = useNavigate();
     const [error, setError] = useState('');
+    const { setUserName } = useContext(UserContext);
 
     const handleLogin = async (employeeId, password) => {
         try {
             const response = await authService.login(employeeId, password);
             const token = response.data.access_token;
+            const userId = response.data.userId; // Pass this from BE on login response
+
             if (token) {
                 localStorage.setItem('authToken', token);
+                localStorage.setItem('userId', userId); // Store userId
+                const userResponse = await axiosInstance.get(`/api/users/${userId}`);
+                setUserName(userResponse.data.firstName);
                 navigate('/home');
             } else {
                 setError('No token received');

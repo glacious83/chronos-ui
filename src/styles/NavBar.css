@@ -1,19 +1,40 @@
-.navbar {
-    background-color: #003841;
-    padding: 1rem 2rem;
+/* src/styles/NavBar.css */
+.navbar-toolbar {
     display: flex;
-    justify-content: center;
-    gap: 2rem;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.navbar a {
+.navbar-title {
+    font-size: 2rem;
+    margin-right: 15rem!important; /* Increased space between logo and tabs */
+}
+
+.navbar-links {
+    display: flex;
+    gap: 3rem; /* Increased gap between tabs */
+}
+
+.navbar-links a {
     color: white;
     font-weight: 600;
     text-decoration: none;
-    font-size: 1rem;
-    transition: color 0.3s ease;
+    font-size: 1.1rem;
+    border-bottom: 2px solid transparent;
+    padding-bottom: 0.25rem;
+    transition: border-color 0.3s ease;
 }
 
-.navbar a:hover {
-    color: #d1d1d1;
+.navbar-links a:hover {
+    border-bottom: 2px solid white; /* Tab hover effect */
+}
+
+.MuiAppBar-root {
+    background-color: #003841 !important;
+}
+
+.MuiIconButton-root {
+    background-color: #005F73 !important;
+    color: white;
+    border-radius: 50%;
 }
