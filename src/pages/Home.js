@@ -1,10 +1,11 @@
 import React from 'react';
+import '../styles/Home.css';
 
 function Home() {
     return (
-        <div style={{ padding: '2rem' }}>
+        <div className="home-container">
             <h2>Welcome to Chronos!</h2>
-            <p>Your dashboard will be implemented soon.</p>
+            <p>This is your project time management portal.</p>
         </div>
     );
 }
