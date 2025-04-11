@@ -3,7 +3,6 @@
     flex-direction: column;
     height: 100vh;
     margin-top: 10vh;
-    margin-left: 10vw;
 }
 
 .admin-container {
@@ -16,7 +15,7 @@
     box-sizing: border-box;
     top: 64px; /* Ensure Drawer is below Navbar */
     z-index: 1200; /* To avoid covering Navbar */
-    margin-top: 1.5vh;
+    margin-top: 10vh;
 }
 
 .admin-content {
