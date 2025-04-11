@@ -11,12 +11,10 @@ function Login() {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            // Call the OAuth2 token endpoint using the password grant.
             const response = await authService.login(employeeId, password);
-            // Expecting a JSON like {access_token: "xxx", token_type:"bearer", expires_in: 3600}
+            // Assuming your backend returns the token in an object like: { access_token: "..." }
             const token = response.data.access_token;
             if (token) {
-                // Store token (for production, consider secure storage and token refresh logic)
                 localStorage.setItem('authToken', token);
                 navigate('/home');
             } else {
