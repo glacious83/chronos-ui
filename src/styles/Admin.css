@@ -1,0 +1,27 @@
+.admin-page-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    margin-top: 10vh;
+    margin-left: 10vw;
+}
+
+.admin-container {
+    display: flex;
+    flex-grow: 1;
+}
+
+.admin-drawer-paper {
+    width: 240px;
+    box-sizing: border-box;
+    top: 64px; /* Ensure Drawer is below Navbar */
+    z-index: 1200; /* To avoid covering Navbar */
+    margin-top: 1.5vh;
+}
+
+.admin-content {
+    flex-grow: 1;
+    padding: 2rem;
+    margin-top: 64px; /* Ensure content is below Navbar */
+    margin-left: 240px; /* Ensure content is not hidden by Drawer */
+}

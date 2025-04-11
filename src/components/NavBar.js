@@ -1,18 +1,18 @@
 import React, {useContext, useEffect, useState} from 'react';
-import { useNavigate } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, Box } from '@mui/material';
+import {useNavigate} from 'react-router-dom';
+import {AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, Box} from '@mui/material';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import axiosInstance from '../services/axiosInstance';
 import '../styles/NavBar.css';
 import {UserContext} from "../context/UserContext";
-import { Tabs, Tab } from '@mui/material';
-import { useLocation } from 'react-router-dom';
+import {Tabs, Tab} from '@mui/material';
+import {useLocation} from 'react-router-dom';
 
 
 function NavBar() {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
-    const { userName, setUserName } = useContext(UserContext);
+    const {userName, setUserName} = useContext(UserContext);
     const location = useLocation();
     const [value, setValue] = useState(location.pathname);
 
@@ -57,6 +57,7 @@ function NavBar() {
     return (
         <AppBar position="static">
             <Toolbar className="navbar-toolbar">
+
                 <Typography variant="h4" className="navbar-title">
                     Chronos
                 </Typography>
@@ -67,13 +68,13 @@ function NavBar() {
                     textColor="inherit"
                     indicatorColor="secondary"
                 >
-                    <Tab label="Admin" value="/admin" />
-                    <Tab label="TimeReg" value="/timereg" />
+                    <Tab label="Admin" value="/admin"/>
+                    <Tab label="TimeReg" value="/timereg"/>
                 </Tabs>
 
-                <Box sx={{ flexGrow: 1 }} />
+                <Box sx={{flexGrow: 1}}/>
 
-                <Typography variant="body1" sx={{ marginRight: 2 }}>
+                <Typography variant="body1" sx={{marginRight: 2}}>
                     {userName ? `Hi, ${userName}` : ''}
                 </Typography>
 
@@ -83,7 +84,7 @@ function NavBar() {
                     color="inherit"
                     onClick={handleMenu}
                 >
-                    <AccountCircle />
+                    <AccountCircle/>
                 </IconButton>
 
                 <Menu

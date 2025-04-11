@@ -1,7 +1,7 @@
 import React from 'react';
 import '../styles/Home.css';
 
-function Home() {
+function HomePage() {
     return (
         <div className="home-container">
             <h2>Welcome to Chronos!</h2>
@@ -10,4 +10,4 @@ function Home() {
     );
 }
 
-export default Home;
+export default HomePage;

@@ -1,19 +1,22 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Login from './pages/LoginPage';
-import Register from './pages/RegisterPage';
-import Home from './pages/Home';
 import NavBar from './components/NavBar';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import HomePage from './pages/HomePage';
+import AdminPage from './pages/AdminPage';
+// import TimeRegPage from './pages/TimeRegPage'; // Placeholder for now
 
 function App() {
     return (
         <Router>
             <NavBar />
             <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/home" element={<Home />} />
-                <Route path="*" element={<Login />} />
+                <Route path="/" element={<HomePage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/admin" element={<AdminPage />} />
+                {/*<Route path="/timereg" element={<TimeRegPage />} />*/}
             </Routes>
         </Router>
     );
