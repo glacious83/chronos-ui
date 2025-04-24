@@ -235,6 +235,7 @@ export default function TimeRegPage() {
                     const total = getTotalHours(day);
                     const overtime = getTotalOvertime(day);
                     const fullLeaveApproved = hasApprovedFullLeave(day);
+                    const holiday = holidays.find(h => h.date === key);
 
                     return (
                         <Paper
@@ -262,6 +263,13 @@ export default function TimeRegPage() {
                                     sx={{backgroundColor: 'transparent !important'}}
                                 ><LeaveIcon/></IconButton>
                             </Box>
+                            {holiday && (
+                                <Box className="holiday-banner">
+                                    <Typography variant="subtitle2">
+                                        {holiday.name}
+                                    </Typography>
+                                </Box>
+                            )}
                             {fullLeaveApproved && (
                                 <Box className="leave-banner">
                                     <Typography variant="subtitle2">
