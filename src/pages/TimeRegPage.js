@@ -148,7 +148,8 @@ export default function TimeRegPage() {
     }
 
     async function fetchHolidays() {
-        const data = await HolidaysService.getAll();
+        const year = currentWeekStart.getFullYear();
+        const data = await HolidaysService.getAll(year);
         setHolidays(data);
     }
 
