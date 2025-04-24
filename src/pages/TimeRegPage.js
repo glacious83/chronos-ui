@@ -17,33 +17,41 @@ import ProjectService from '../services/projectService';
 import '../styles/TimeReg.css';
 
 function TimeRegPage() {
-    const userId = parseInt(localStorage.getItem('userId'));
+    const userId = parseInt(localStorage.getItem('userId'), 10);
+
+    // start week on Monday
+    function getStartOfWeek(date) {
+        const d = new Date(date);
+        // compute how many days since Monday
+        const diff = (d.getDay() + 6) % 7;
+        d.setDate(d.getDate() - diff);
+        return d;
+    }
+
     const [currentWeekStart, setCurrentWeekStart] = useState(getStartOfWeek(new Date()));
     const [timeEntries, setTimeEntries] = useState({});
     const [projects, setProjects] = useState([]);
+
     const [openDialog, setOpenDialog] = useState(false);
     const [currentDay, setCurrentDay] = useState(null);
     const [editingEntry, setEditingEntry] = useState(null);
     const [entryForm, setEntryForm] = useState({
         projectId: '', hours: '', description: '', workLocation: 'OFFICE'
     });
+
     const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
     const [leaveDay, setLeaveDay] = useState(null);
     const [leaveHours, setLeaveHours] = useState(0);
+
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
 
+    // build the seven days from Monday → Sunday
     const weekDays = Array.from({ length: 7 }, (_, i) => {
         const d = new Date(currentWeekStart);
         d.setDate(d.getDate() + i);
         return d;
     });
-
-    function getStartOfWeek(date) {
-        const d = new Date(date);
-        d.setDate(d.getDate() - d.getDay());
-        return d;
-    }
 
     function formatDate(d) {
         return d.toLocaleDateString('en-US', {
@@ -63,6 +71,11 @@ function TimeRegPage() {
 
     function isToday(d) {
         return d.toDateString() === new Date().toDateString();
+    }
+
+    function isWeekend(d) {
+        const day = d.getDay();
+        return day === 0 || day === 6; // Sunday=0, Saturday=6
     }
 
     function getTotalHoursForDay(d) {
@@ -129,7 +142,7 @@ function TimeRegPage() {
         if (!window.confirm('Delete this entry?')) return;
         try {
             await TimeRegService.delete(id);
-            fetchTimeEntries();
+            await fetchTimeEntries();
             setSnackbarMessage('Entry deleted');
             setOpenSnackbar(true);
         } catch {
@@ -148,7 +161,7 @@ function TimeRegPage() {
 
         const payload = {
             userId,
-            projectId: parseInt(entryForm.projectId),
+            projectId: parseInt(entryForm.projectId, 10),
             date: dateStr,
             workedHours: worked,
             overtimeHours: overtime,
@@ -163,7 +176,7 @@ function TimeRegPage() {
                 await TimeRegService.create(payload);
             }
             setOpenDialog(false);
-            fetchTimeEntries();
+            await fetchTimeEntries();
             if (prevTotal + worked < 8) {
                 setLeaveDay(currentDay);
                 setLeaveHours(8 - (prevTotal + worked));
@@ -187,7 +200,7 @@ function TimeRegPage() {
                 workLocation: 'HOME'
             });
             setOpenLeaveDialog(false);
-            fetchTimeEntries();
+            await fetchTimeEntries();
             setSnackbarMessage('Leave added');
             setOpenSnackbar(true);
         } catch {
@@ -214,21 +227,25 @@ function TimeRegPage() {
 
             <Grid container spacing={2} className="week-grid">
                 {weekDays.map(day => {
-                    const key = formatDateForApi(day);
+                    const key     = formatDateForApi(day);
                     const regular = getTotalHoursForDay(day);
                     const ot      = getTotalOvertimeForDay(day);
                     const leave   = isOnLeaveDay(day);
+                    const weekend = isWeekend(day);
 
                     return (
                         <Grid item xs={12} sm={6} md={4} lg={12/7} key={key}>
-                            <Paper className={isToday(day) ? 'today day-card' : 'day-card'} elevation={3}>
+                            <Paper
+                                className={`${weekend ? 'weekend ' : ''}${isToday(day) ? 'today ' : ''}day-card`}
+                                elevation={3}
+                            >
                                 <Box className="day-header">
                                     <Typography variant="h6">{formatDate(day)}</Typography>
                                     <IconButton size="small" onClick={() => handleAddClick(day)} sx={{ backgroundColor: 'transparent !important' }}><AddIcon/></IconButton>
                                 </Box>
                                 <Divider/>
                                 <Box className="day-summary">
-                                    <Typography>Hours: <strong>{regular}</strong></Typography>
+                                    <Typography>Hours: <strong>{regular + ot}</strong></Typography>
                                     <Box sx={{ display:'flex', gap:1, mt:0.5 }}>
                                         {ot > 0 && <Chip size="small" color="error" label={`OT: ${ot}h`}/>}
                                         {leave && <Chip size="small" color="info" label="Leave"/>}
@@ -237,37 +254,27 @@ function TimeRegPage() {
                                 </Box>
                                 {timeEntries[key]?.map(entry => (
                                     <Box key={entry.id} className="entry-item">
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                        <Box sx={{ display:'flex', alignItems:'center', gap:1 }}>
                                             <Typography variant="body2">
                                                 {entry.project?.name || entry.projectId}: {entry.workedHours}h
                                             </Typography>
                                             {entry.overtimeHours > 0 && (
-                                                <Chip
-                                                    size="small"
-                                                    color="error"
-                                                    label={`+${entry.overtimeHours}h OT`}
-                                                />
+                                                <Chip size="small" color="error" label={`+${entry.overtimeHours}h OT`}/>
                                             )}
                                         </Box>
                                         <Box>
-                                            <IconButton size="small" onClick={() => handleEditEntry(day, entry)} sx={{ backgroundColor: 'transparent !important' }}>
-                                                <EditIcon fontSize="small" />
-                                            </IconButton>
-                                            <IconButton size="small" onClick={() => handleDeleteEntry(entry.id)} sx={{ backgroundColor: 'transparent !important' }}>
-                                                <DeleteIcon fontSize="small" />
-                                            </IconButton>
+                                            <IconButton size="small" onClick={() => handleEditEntry(day, entry)} sx={{ backgroundColor: 'transparent !important' }}><EditIcon fontSize="small"/></IconButton>
+                                            <IconButton size="small" onClick={() => handleDeleteEntry(entry.id)} sx={{ backgroundColor: 'transparent !important' }}><DeleteIcon fontSize="small"/></IconButton>
                                         </Box>
                                     </Box>
                                 ))}
-
                             </Paper>
                         </Grid>
                     );
                 })}
             </Grid>
 
-            {/* ... dialogs and snackbar ... */}
-
+            {/* Dialogs & Snackbar unchanged */}
         </Box>
     );
 }

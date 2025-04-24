@@ -76,3 +76,7 @@
 .addBtn, .editBtn, .deleteBtn {
     background-color: transparent!important;
 }
+
+.weekend.day-card {
+    background-color: #f5f5f5;
+}
