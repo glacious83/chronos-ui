@@ -1,6 +1,29 @@
 // src/components/UsersList.js
 import React, { useState, useEffect } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Checkbox, FormControlLabel, MenuItem, Tooltip } from '@mui/material';
+import '../styles/UsersList.css';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Menu from '@mui/material/Menu';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    Typography,
+    IconButton,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    TextField,
+    Checkbox,
+    FormControlLabel,
+    MenuItem,
+    Tooltip,
+    Box
+} from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
@@ -14,6 +37,19 @@ function UsersList({ users }) {
     const [selectedUser, setSelectedUser] = useState(null);
     const [departments, setDepartments] = useState([]);
     const [companies, setCompanies] = useState([]);
+
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [menuUserId, setMenuUserId] = useState(null);
+
+    const handleMenuOpen = (event, userId) => {
+        setAnchorEl(event.currentTarget);
+        setMenuUserId(userId);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+        setMenuUserId(null);
+    };
 
     useEffect(() => {
         const fetchOptions = async () => {
@@ -71,59 +107,102 @@ function UsersList({ users }) {
 
     return (
         <>
-            <TableContainer component={Paper}>
-                <Table>
+            <Box sx={{ paddingRight: '16px', overflowX: 'auto' }}>
+                <TableContainer component={Paper}>
+                    <Table size="small" sx={{ minWidth: '700px' }}>
                     <TableHead>
                         <TableRow>
-                            <TableCell>First Name</TableCell>
-                            <TableCell>Middle Name</TableCell>
-                            <TableCell>Last Name</TableCell>
-                            <TableCell>Email</TableCell>
-                            <TableCell>Employee ID</TableCell>
-                            <TableCell>SAP ID</TableCell>
-                            <TableCell>VM</TableCell>
-                            <TableCell>IP</TableCell>
-                            <TableCell>Phone</TableCell>
-                            <TableCell>Location</TableCell>
-                            <TableCell>Title</TableCell>
-                            <TableCell>Department</TableCell>
-                            <TableCell>Manager</TableCell>
-                            <TableCell>Company</TableCell>
-                            <TableCell>Active</TableCell>
-                            <TableCell>Approved</TableCell>
-                            <TableCell>Actions</TableCell>
+                            <TableCell className="compact-cell">First Name</TableCell>
+                            <TableCell className="compact-cell">Middle Name</TableCell>
+                            <TableCell className="compact-cell">Last Name</TableCell>
+                            <TableCell className="compact-cell">Email</TableCell>
+                            <TableCell className="compact-cell">Sydipel</TableCell>
+                            <TableCell className="compact-cell">SAP ID</TableCell>
+                            <TableCell className="compact-cell">VM</TableCell>
+                            <TableCell className="compact-cell">IP</TableCell>
+                            <TableCell className="compact-cell">Phone</TableCell>
+                            <TableCell className="compact-cell">Location</TableCell>
+                            <TableCell className="compact-cell">Title</TableCell>
+                            <TableCell className="compact-cell">Department</TableCell>
+                            <TableCell className="compact-cell">Manager</TableCell>
+                            <TableCell className="compact-cell">Company</TableCell>
+                            <TableCell className="compact-cell">Active</TableCell>
+                            <TableCell className="compact-cell">Approved</TableCell>
+                            <TableCell className="compact-cell">Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {users.map((user) => (
                             <TableRow key={user.id}>
-                                <TableCell>{user.firstName}</TableCell>
-                                <TableCell>{user.middleName}</TableCell>
-                                <TableCell>{user.lastName}</TableCell>
-                                <TableCell>{user.email}</TableCell>
-                                <TableCell>{user.employeeId}</TableCell>
-                                <TableCell>{user.sapId}</TableCell>
-                                <TableCell>{user.vm}</TableCell>
-                                <TableCell>{user.ip}</TableCell>
-                                <TableCell>{user.phone}</TableCell>
-                                <TableCell>{user.location}</TableCell>
-                                <TableCell>{user.title}</TableCell>
-                                <TableCell>{user.department}</TableCell>
-                                <TableCell>{user.responsibleManager}</TableCell>
-                                <TableCell>{user.company}</TableCell>
-                                <TableCell>{user.active ? <CheckIcon /> : <CloseIcon />}</TableCell>
-                                <TableCell>{user.approved ? <CheckIcon /> : <CloseIcon />}</TableCell>
+                                <TableCell className="compact-cell">{user.firstName}</TableCell>
+                                <TableCell className="compact-cell">{user.middleName}</TableCell>
+                                <TableCell className="compact-cell">{user.lastName}</TableCell>
+                                <TableCell className="compact-cell">{user.email}</TableCell>
+                                <TableCell className="compact-cell">{user.employeeId}</TableCell>
+                                <TableCell className="compact-cell">{user.sapId}</TableCell>
+                                <TableCell className="compact-cell">{user.vm}</TableCell>
+                                <TableCell className="compact-cell">{user.ip}</TableCell>
+                                <TableCell className="compact-cell">{user.phone}</TableCell>
+                                <TableCell className="compact-cell">{user.location?.cityName || '-'}</TableCell>
+                                <TableCell className="compact-cell">{user.title}</TableCell>
+                                <TableCell className="compact-cell">{user.department?.code || '-'}</TableCell>
+                                <TableCell className="compact-cell">{user.responsibleManager ? `${user.responsibleManager.firstName} ${user.responsibleManager.lastName}` : '-'}</TableCell>
+                                <TableCell className="compact-cell">{user.company?.name || '-'}</TableCell>
+                                <TableCell className="compact-cell">{user.active ? <CheckIcon /> : <CloseIcon />}</TableCell>
+                                <TableCell className="compact-cell">{user.approved ? <CheckIcon /> : <CloseIcon />}</TableCell>
                                 <TableCell>
-                                    {!user.approved && <Tooltip title="Approve"><IconButton sx={{ backgroundColor: 'transparent!important', color: 'inherit' }} onClick={() => handleApproveClick(user.id)}><DoneAllIcon /></IconButton></Tooltip>}
-                                    {!user.active && <Tooltip title="Activate"><IconButton sx={{ backgroundColor: 'transparent!important', color: 'inherit' }} onClick={() => handleActivateClick(user.id, true)}><LockOpenIcon /></IconButton></Tooltip>}
-                                    <IconButton sx={{ backgroundColor: 'transparent!important', color: 'inherit' }} onClick={() => handleEditClick(user)}><EditIcon /></IconButton>
-                                    <IconButton sx={{ backgroundColor: 'transparent!important', color: 'inherit' }} onClick={() => handleDeleteClick(user.id)}><DeleteIcon /></IconButton>
+                                    <IconButton
+                                        onClick={(event) => handleMenuOpen(event, user.id)}
+                                        sx={{ backgroundColor: 'transparent', color: 'inherit' }}
+                                    >
+                                        <MoreVertIcon />
+                                    </IconButton>
+
+                                    <Menu
+                                        anchorEl={anchorEl}
+                                        open={menuUserId === user.id && Boolean(anchorEl)}
+                                        onClose={handleMenuClose}
+                                        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                                        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                                        sx={{ '& .MuiPaper-root': { backgroundColor: 'transparent', boxShadow: 'none' } }}
+                                    >
+                                        {/* Conditionally render actions based on user properties */}
+                                        {!user.approved && (
+                                            <MenuItem onClick={() => { handleApproveClick(user.id); handleMenuClose(); }}>
+                                                <Tooltip title="Approve">
+                                                    <DoneAllIcon fontSize="small" />
+                                                </Tooltip>
+                                                Approve
+                                            </MenuItem>
+                                        )}
+                                        {!user.active && (
+                                            <MenuItem onClick={() => { handleActivateClick(user.id, true); handleMenuClose(); }}>
+                                                <Tooltip title="Activate">
+                                                    <LockOpenIcon fontSize="small" />
+                                                </Tooltip>
+                                                Activate
+                                            </MenuItem>
+                                        )}
+                                        <MenuItem onClick={() => { handleEditClick(user); handleMenuClose(); }}>
+                                            <Tooltip title="Edit">
+                                                <EditIcon fontSize="small" />
+                                            </Tooltip>
+                                            Edit
+                                        </MenuItem>
+                                        <MenuItem onClick={() => { handleDeleteClick(user.id); handleMenuClose(); }}>
+                                            <Tooltip title="Delete">
+                                                <DeleteIcon fontSize="small" />
+                                            </Tooltip>
+                                            Delete
+                                        </MenuItem>
+                                    </Menu>
                                 </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
+            </Box>
         </>
     );
 }
