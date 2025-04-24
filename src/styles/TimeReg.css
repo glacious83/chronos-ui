@@ -113,3 +113,7 @@
     text-align: center;
 }
 
+.holiday {
+    background-color: #f5f5f5; /* same grey as weekend */
+}
+

@@ -16,6 +16,7 @@ import {
 import TimeRegService from '../services/timeRegService';
 import ProjectService from '../services/projectService';
 import LeaveService from '../services/leaveService';
+import HolidaysService from '../services/holidaysService';
 import '../styles/TimeReg.css';
 
 export default function TimeRegPage() {
@@ -43,6 +44,7 @@ export default function TimeRegPage() {
     const [timeEntries, setTimeEntries] = useState({});
     const [leaves, setLeaves] = useState({});
     const [projects, setProjects] = useState([]);
+    const [holidays, setHolidays] = useState([]);
 
     const [openDialog, setOpenDialog] = useState(false);
     const [currentDay, setCurrentDay] = useState(null);
@@ -68,6 +70,11 @@ export default function TimeRegPage() {
     function isWeekend(d) {
         const day = d.getDay();
         return day === 0 || day === 6;
+    }
+
+    function isHoliday(d) {
+        const key = formatDateForApi(d);
+        return holidays.some(h => h.date === key);
     }
 
     function isToday(d) {
@@ -124,6 +131,7 @@ export default function TimeRegPage() {
         fetchEntries();
         fetchLeaves();
         fetchProjects();
+        fetchHolidays();
     }, [currentWeekStart]);
 
     function navigateWeek(dir) {
@@ -137,6 +145,11 @@ export default function TimeRegPage() {
         setEditingEntry(null);
         setEntryForm({projectId: '', hours: '', description: '', workLocation: 'OFFICE'});
         setOpenDialog(true);
+    }
+
+    async function fetchHolidays() {
+        const data = await HolidaysService.getAll();
+        setHolidays(data);
     }
 
     function openAddLeave(d) {
@@ -222,12 +235,16 @@ export default function TimeRegPage() {
                     const total = getTotalHours(day);
                     const overtime = getTotalOvertime(day);
                     const fullLeaveApproved = hasApprovedFullLeave(day);
-                    const weekend = isWeekend(day);
 
                     return (
                         <Paper
                             key={key}
-                            className={`${weekend ? 'weekend ' : ''}${isToday(day) ? 'today ' : ''}${fullLeaveApproved ? 'full-leave-approved ' : ''}day-card`}
+                            className={`
+                            ${isHoliday(day) ? 'holiday ' : ''}
+                            ${isWeekend(day) ? 'weekend ' : ''}
+                            ${isToday(day) ? 'today ' : ''}
+                            ${hasApprovedFullLeave(day) ? 'full-leave-approved ' : ''}
+                            day-card`}
                             elevation={3}
                         >
                             <Box className="day-header">
