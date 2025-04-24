@@ -234,6 +234,17 @@ export default function TimeRegPage() {
                 {weekDays.map(day => {
                     const key = formatDateForApi(day);
                     const total = getTotalHours(day);
+                    const leaveSum      = (leaves[key] || []).reduce(
+                        (sum, l) => sum + (l.leaveType === 'FULL' ? 8 : 4),
+                        0
+                    );
+                    const registered    = total + leaveSum;
+                    const isPastOrToday = day <= new Date();
+                    const underRegistered =
+                        isPastOrToday &&
+                        !isWeekend(day) &&
+                        !isHoliday(day) &&
+                        registered < 8;
                     const overtime = getTotalOvertime(day);
                     const fullLeaveApproved = hasApprovedFullLeave(day);
                     const holiday = holidays.find(h => h.date === key);
@@ -242,6 +253,7 @@ export default function TimeRegPage() {
                         <Paper
                             key={key}
                             className={`
+                            ${underRegistered ? 'under-registered ' : ''}
                             ${isHoliday(day) ? 'holiday ' : ''}
                             ${isWeekend(day) ? 'weekend ' : ''}
                             ${isToday(day) ? 'today ' : ''}
@@ -254,13 +266,13 @@ export default function TimeRegPage() {
                                 <IconButton
                                     size="small"
                                     onClick={() => openAddTime(day)}
-                                    disabled={fullLeaveApproved || total + overtime >= 8}
+                                    disabled={fullLeaveApproved || total + overtime >= 24}
                                     sx={{backgroundColor: 'transparent !important'}}
                                 ><AddIcon/></IconButton>
                                 <IconButton
                                     size="small"
                                     onClick={() => openAddLeave(day)}
-                                    disabled={fullLeaveApproved}
+                                    disabled={fullLeaveApproved || isWeekend(day) || isHoliday(day)}
                                     sx={{backgroundColor: 'transparent !important'}}
                                 ><LeaveIcon/></IconButton>
                             </Box>
