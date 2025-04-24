@@ -5,6 +5,7 @@ import UsersList from '../components/UsersList';
 import axiosInstance from '../services/axiosInstance';
 import '../styles/Admin.css';
 import ImporterPage from "./ImporterPage";
+import LeaveManagementPage from "./LeaveManagementPage";
 
 function AdminPage() {
     const [errors, setErrors] = useState({});
@@ -54,6 +55,7 @@ function AdminPage() {
             <AdminForm errors={errors} setSelectedMenu={setSelectedMenu} />
             <div className="admin-content">
                 {selectedMenu === 'Users List' && <UsersList users={users} />}
+                {selectedMenu === 'Leave Management' && <LeaveManagementPage />}
                 {selectedMenu === 'Importer' && <ImporterPage />}
                 {selectedMenu === '' && <h4>Admin Dashboard</h4>}
 

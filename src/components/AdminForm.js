@@ -14,7 +14,7 @@ import ImportExportIcon from '@mui/icons-material/ImportExport';
 import '../styles/Admin.css';
 
 const menuItems = [
-    {text: 'Users', icon: <PeopleIcon/>, errorKey: 'userError', subItems: ['Users List', 'Approve/Activate Users']},
+    { text: 'Users', icon: <PeopleIcon/>, errorKey: 'userError', subItems: ['Users List', 'Approve/Activate Users', 'Leave Management'] },
     {text: 'Departments', icon: <ApartmentIcon/>, errorKey: 'departmentError', subItems: []},
     {text: 'Rates', icon: <MonetizationOnIcon/>, errorKey: 'rateError', subItems: []},
     {text: 'Work Orders', icon: <WorkIcon/>, errorKey: 'workOrderError', subItems: []},

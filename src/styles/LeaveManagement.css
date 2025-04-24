@@ -1,0 +1,17 @@
+.lm-page-container {
+    padding: 24px;
+}
+
+.lm-table-container {
+    margin-top: 16px;
+}
+
+.lm-no-data {
+    padding: 16px;
+    font-style: italic;
+}
+
+.lm-status-approved {
+    color: #2e7d32;
+    font-weight: bold;
+}

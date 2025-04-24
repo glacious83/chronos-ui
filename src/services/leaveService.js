@@ -29,6 +29,17 @@ const LeaveService = {
         return data;
     },
 
+    getSubordinates: (managerId) =>
+        axiosInstance.get(BASE_URL + `/subordinates/3`)
+            .then(r => r.data),
+
+    updateSubordinateStatus: (managerId, leaveId, newStatus) =>
+        axiosInstance.put(
+            BASE_URL + `/subordinates/${managerId}/${leaveId}`,
+            null,
+            { params: { newStatus } }
+        ).then(r => r.data),
+
     /**
      * Cancel (delete) a leave entry.
      * PUT /api/leaves/{leaveId}/cancel?userId=...
