@@ -1,5 +1,7 @@
 // src/pages/TimeRegPage.js
 import React, {useState, useEffect} from 'react';
+import {Tooltip} from '@mui/material';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import {
     Box, Typography, Paper, Button, IconButton,
     Dialog, DialogTitle, DialogContent, DialogActions,
@@ -230,151 +232,153 @@ export default function TimeRegPage() {
                 </Box>
             </Box>
 
-            <Box className="week-grid">
-                {weekDays.map(day => {
-                    const key = formatDateForApi(day);
-                    const total = getTotalHours(day);
-                    const leaveSum      = (leaves[key] || []).reduce(
-                        (sum, l) => sum + (l.leaveType === 'FULL' ? 8 : 4),
-                        0
-                    );
-                    const registered    = total + leaveSum;
-                    const isPastOrToday = day <= new Date();
-                    const underRegistered =
-                        isPastOrToday &&
-                        !isWeekend(day) &&
-                        !isHoliday(day) &&
-                        registered < 8;
-                    const overtime = getTotalOvertime(day);
-                    const fullLeaveApproved = hasApprovedFullLeave(day);
-                    const holiday = holidays.find(h => h.date === key);
+                <Box className="week-grid">
+                    {weekDays.map(day => {
+                        const key = formatDateForApi(day);
+                        const total = getTotalHours(day);
+                        const leaveSum = (leaves[key] || []).reduce(
+                            (sum, l) => sum + (l.leaveType === 'FULL' ? 8 : 4),
+                            0
+                        );
+                        const registered = total + leaveSum;
+                        const isPastOrToday = day <= new Date();
+                        const underRegistered =
+                            isPastOrToday &&
+                            !isWeekend(day) &&
+                            !isHoliday(day) &&
+                            registered < 8;
+                        const overtime = getTotalOvertime(day);
+                        const fullLeaveApproved = hasApprovedFullLeave(day);
+                        const holiday = holidays.find(h => h.date === key);
 
-                    return (
-                        <Paper
-                            key={key}
-                            className={`
+                        return (
+                            <Paper
+                                key={key}
+                                className={`
                             ${underRegistered ? 'under-registered ' : ''}
                             ${isHoliday(day) ? 'holiday ' : ''}
                             ${isWeekend(day) ? 'weekend ' : ''}
                             ${isToday(day) ? 'today ' : ''}
                             ${hasApprovedFullLeave(day) ? 'full-leave-approved ' : ''}
                             day-card`}
-                            elevation={3}
-                        >
-                            <Box className="day-header">
-                                <Typography variant="h6">{formatDate(day)}</Typography>
-                                <IconButton
-                                    size="small"
-                                    onClick={() => openAddTime(day)}
-                                    disabled={fullLeaveApproved || total + overtime >= 24}
-                                    sx={{backgroundColor: 'transparent !important'}}
-                                ><AddIcon/></IconButton>
-                                <IconButton
-                                    size="small"
-                                    onClick={() => openAddLeave(day)}
-                                    disabled={fullLeaveApproved || isWeekend(day) || isHoliday(day)}
-                                    sx={{backgroundColor: 'transparent !important'}}
-                                ><LeaveIcon/></IconButton>
-                            </Box>
-                            {holiday && (
-                                <Box className="holiday-banner">
-                                    <Typography variant="subtitle2">
-                                        {holiday.name}
-                                    </Typography>
-                                </Box>
-                            )}
-                            {fullLeaveApproved && (
-                                <Box className="leave-banner">
-                                    <Typography variant="subtitle2">
-                                        Approved Full-Day Leave
-                                    </Typography>
-                                </Box>
-                            )}
-                            <Divider/>
-                            <Box className="day-summary">
-                                <Typography>Hours: <strong>{total + overtime}</strong></Typography>
-                                <Box sx={{display: 'flex', gap: 1, mt: 0.5}}>
-                                    {overtime > 0 && <Chip size="small" color="error" label={`OT: ${overtime}h`}/>}
-                                </Box>
-                                <Typography sx={{mt: 0.5}}>Projects: {timeEntries[key]?.length || 0}</Typography>
-                            </Box>
-                            {timeEntries[key]?.map(e => (
-                                <Box key={e.id} className="entry-item">
-                                    <Typography variant="body2">
-                                        {e.project?.name || e.projectId}: {e.workedHours}h
-                                    </Typography>
-                                </Box>
-                            ))}
-                            {leaves[key]?.map(l => (
-                                <Box key={l.id} className="entry-item">
-                                    <Chip
-                                        label={l.leaveType}
-                                        onDelete={() => handleCancelLeave(l.id)}
+                                elevation={3}
+                            >
+                                <Box className="day-header">
+                                    <Typography variant="h6">{formatDate(day)}</Typography>
+                                    <IconButton
                                         size="small"
-                                        color={l.leaveStatus === 'APPROVED' ? 'success' : 'default'}
-                                    />
+                                        onClick={() => openAddTime(day)}
+                                        disabled={fullLeaveApproved || total + overtime >= 24}
+                                        className={fullLeaveApproved || total + overtime >= 24 ? 'disabled-icon' : ''}
+                                        sx={{backgroundColor: 'transparent !important'}}
+                                    ><AddIcon/></IconButton>
+                                    <IconButton
+                                        size="small"
+                                        onClick={() => openAddLeave(day)}
+                                        disabled={fullLeaveApproved || isWeekend(day) || isHoliday(day)}
+                                        className={fullLeaveApproved || isWeekend(day) || isHoliday(day) ? 'disabled-icon' : ''}
+                                        sx={{backgroundColor: 'transparent !important'}}
+                                    ><LeaveIcon/></IconButton>
                                 </Box>
-                            ))}
-                        </Paper>
-                    );
-                })}
+                                {holiday && (
+                                    <Box className="holiday-banner">
+                                        <Typography variant="subtitle2">
+                                            {holiday.name}
+                                        </Typography>
+                                    </Box>
+                                )}
+                                {fullLeaveApproved && (
+                                    <Box className="leave-banner">
+                                        <Typography variant="subtitle2">
+                                            Approved Full-Day Leave
+                                        </Typography>
+                                    </Box>
+                                )}
+                                <Divider/>
+                                <Box className="day-summary">
+                                    <Typography>Hours: <strong>{total + overtime}</strong></Typography>
+                                    <Box sx={{display: 'flex', gap: 1, mt: 0.5}}>
+                                        {overtime > 0 && <Chip size="small" color="error" label={`OT: ${overtime}h`}/>}
+                                    </Box>
+                                    <Typography sx={{mt: 0.5}}>Projects: {timeEntries[key]?.length || 0}</Typography>
+                                </Box>
+                                {timeEntries[key]?.map(e => (
+                                    <Box key={e.id} className="entry-item">
+                                        <Typography variant="body2">
+                                            {e.project?.name || e.projectId}: {e.workedHours}h
+                                        </Typography>
+                                    </Box>
+                                ))}
+                                {leaves[key]?.map(l => (
+                                    <Box key={l.id} className="entry-item">
+                                        <Chip
+                                            label={l.leaveType}
+                                            onDelete={() => handleCancelLeave(l.id)}
+                                            size="small"
+                                            color={l.leaveStatus === 'APPROVED' ? 'success' : 'default'}
+                                        />
+                                    </Box>
+                                ))}
+                            </Paper>
+                        );
+                    })}
+                </Box>
+
+                <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+                    <DialogTitle>{editingEntry ? 'Edit Time Entry' : 'Add Time Entry'}</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            select label="Project" fullWidth margin="normal" required
+                            value={entryForm.projectId}
+                            onChange={e => setEntryForm({...entryForm, projectId: e.target.value})}
+                        >
+                            {projects.map(p => <MenuItem key={p.id} value={p.id}>{p.name}</MenuItem>)}
+                        </TextField>
+                        <TextField
+                            label="Hours" type="number" fullWidth margin="normal" required
+                            inputProps={{min: 0.5, max: 24, step: 0.5}}
+                            value={entryForm.hours}
+                            onChange={e => setEntryForm({...entryForm, hours: e.target.value})}
+                        />
+                        <TextField
+                            select label="Work Location" fullWidth margin="normal" required
+                            value={entryForm.workLocation}
+                            onChange={e => setEntryForm({...entryForm, workLocation: e.target.value})}
+                        >
+                            <MenuItem value="OFFICE">Work from Office</MenuItem>
+                            <MenuItem value="HOME">Work from Home</MenuItem>
+                        </TextField>
+                        <TextField
+                            label="Description" fullWidth margin="normal" multiline rows={3}
+                            value={entryForm.description}
+                            onChange={e => setEntryForm({...entryForm, description: e.target.value})}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+                        <Button variant="contained" onClick={handleDialogSave}>Save</Button>
+                    </DialogActions>
+                </Dialog>
+
+                <Dialog open={openLeaveDialog} onClose={() => setOpenLeaveDialog(false)}>
+                    <DialogTitle>Add Leave</DialogTitle>
+                    <DialogContent>
+                        <Alert severity="info">
+                            Register {leaveHours}h leave on {leaveDay && formatDate(leaveDay)}?
+                        </Alert>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setOpenLeaveDialog(false)}>No</Button>
+                        <Button variant="contained" onClick={handleAddLeave}>Yes</Button>
+                    </DialogActions>
+                </Dialog>
+
+                <Snackbar
+                    open={openSnackbar}
+                    autoHideDuration={4000}
+                    onClose={() => setOpenSnackbar(false)}
+                    message={snackbarMessage}
+                />
             </Box>
-
-            <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-                <DialogTitle>{editingEntry ? 'Edit Time Entry' : 'Add Time Entry'}</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        select label="Project" fullWidth margin="normal" required
-                        value={entryForm.projectId}
-                        onChange={e => setEntryForm({...entryForm, projectId: e.target.value})}
-                    >
-                        {projects.map(p => <MenuItem key={p.id} value={p.id}>{p.name}</MenuItem>)}
-                    </TextField>
-                    <TextField
-                        label="Hours" type="number" fullWidth margin="normal" required
-                        inputProps={{min: 0.5, max: 24, step: 0.5}}
-                        value={entryForm.hours}
-                        onChange={e => setEntryForm({...entryForm, hours: e.target.value})}
-                    />
-                    <TextField
-                        select label="Work Location" fullWidth margin="normal" required
-                        value={entryForm.workLocation}
-                        onChange={e => setEntryForm({...entryForm, workLocation: e.target.value})}
-                    >
-                        <MenuItem value="OFFICE">Work from Office</MenuItem>
-                        <MenuItem value="HOME">Work from Home</MenuItem>
-                    </TextField>
-                    <TextField
-                        label="Description" fullWidth margin="normal" multiline rows={3}
-                        value={entryForm.description}
-                        onChange={e => setEntryForm({...entryForm, description: e.target.value})}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
-                    <Button variant="contained" onClick={handleDialogSave}>Save</Button>
-                </DialogActions>
-            </Dialog>
-
-            <Dialog open={openLeaveDialog} onClose={() => setOpenLeaveDialog(false)}>
-                <DialogTitle>Add Leave</DialogTitle>
-                <DialogContent>
-                    <Alert severity="info">
-                        Register {leaveHours}h leave on {leaveDay && formatDate(leaveDay)}?
-                    </Alert>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setOpenLeaveDialog(false)}>No</Button>
-                    <Button variant="contained" onClick={handleAddLeave}>Yes</Button>
-                </DialogActions>
-            </Dialog>
-
-            <Snackbar
-                open={openSnackbar}
-                autoHideDuration={4000}
-                onClose={() => setOpenSnackbar(false)}
-                message={snackbarMessage}
-            />
-        </Box>
-    );
-}
+            );
+            }

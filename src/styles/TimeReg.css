@@ -10,7 +10,10 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
+    flex-wrap: wrap;
 }
+
+.header-legend { display: flex; align-items: center; }
 
 .week-navigation {
     display: flex;
@@ -24,7 +27,7 @@
 
 .day-card {
     height: 100%;
-    min-height: 200px;
+    min-height: 250px;
     display: flex;
     flex-direction: column;
     padding: 1rem;
@@ -102,8 +105,18 @@
     border: 2px solid #1976d2;
 }
 
+.today .MuiTypography-root {
+    text-decoration: underline;
+}
+
+.disabled-icon {
+    opacity: 0.4;
+}
+
 .full-leave-approved {
-    background-color: #f0f4c3; /* light green */
+    background-color: #c8e6c9 !important;   /* stronger green */
+    border: 2px solid #388e3c;              /* dark-green outline */
+    box-shadow: 0 4px 8px rgba(0, 128, 0, 0.2);
 }
 
 .leave-banner {
@@ -114,16 +127,22 @@
 }
 
 .holiday {
-    background-color: #aec7ca !important;
+    background-color: #cfe6fb !important;
+    border: 2px solid #64b5f6 !important;
 }
 
 .holiday-banner {
-    background-color: white !important;
+    background-color: #E9F4FDFF !important;
     border-bottom: 1px solid #b0bec5;
     padding: 4px 8px;
     text-align: center;
 }
 
+.day-header .MuiTypography-h6 {
+    white-space: nowrap;
+}
+
 .under-registered {
-    background-color: #F68F97FF !important;
+    background-color: #ffe5e5 !important;
+    border: 1px solid #ff4d4f !important;
 }
