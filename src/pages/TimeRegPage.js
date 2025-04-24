@@ -84,9 +84,11 @@ export default function TimeRegPage() {
         return (timeEntries[key]?.reduce((sum, e) => sum + e.overtimeHours, 0)) || 0;
     }
 
-    function hasFullLeave(d) {
+    function hasApprovedFullLeave(d) {
         const key = formatDateForApi(d);
-        return (leaves[key]?.some(l => l.leaveType === 'FULL')) || false;
+        return (leaves[key]?.some(l =>
+            l.leaveType === 'FULL' && l.leaveStatus === 'APPROVED'
+        )) || false;
     }
 
     async function fetchEntries() {
@@ -219,13 +221,13 @@ export default function TimeRegPage() {
                     const key = formatDateForApi(day);
                     const total = getTotalHours(day);
                     const overtime = getTotalOvertime(day);
-                    const fullLeave = hasFullLeave(day);
+                    const fullLeaveApproved = hasApprovedFullLeave(day);
                     const weekend = isWeekend(day);
 
                     return (
                         <Paper
                             key={key}
-                            className={`${weekend ? 'weekend ' : ''}${isToday(day) ? 'today ' : ''}day-card`}
+                            className={`${weekend ? 'weekend ' : ''}${isToday(day) ? 'today ' : ''}${fullLeaveApproved ? 'full-leave-approved ' : ''}day-card`}
                             elevation={3}
                         >
                             <Box className="day-header">
@@ -233,16 +235,23 @@ export default function TimeRegPage() {
                                 <IconButton
                                     size="small"
                                     onClick={() => openAddTime(day)}
-                                    disabled={fullLeave || total + overtime >= 8}
+                                    disabled={fullLeaveApproved || total + overtime >= 8}
                                     sx={{backgroundColor: 'transparent !important'}}
                                 ><AddIcon/></IconButton>
                                 <IconButton
                                     size="small"
                                     onClick={() => openAddLeave(day)}
-                                    disabled={fullLeave}
+                                    disabled={fullLeaveApproved}
                                     sx={{backgroundColor: 'transparent !important'}}
                                 ><LeaveIcon/></IconButton>
                             </Box>
+                            {fullLeaveApproved && (
+                                <Box className="leave-banner">
+                                    <Typography variant="subtitle2">
+                                        Approved Full-Day Leave
+                                    </Typography>
+                                </Box>
+                            )}
                             <Divider/>
                             <Box className="day-summary">
                                 <Typography>Hours: <strong>{total + overtime}</strong></Typography>
