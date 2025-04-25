@@ -7,9 +7,22 @@ import '../styles/Admin.css';
 import ImporterPage from "./ImporterPage";
 import LeaveManagementPage from "./LeaveManagementPage";
 import ApprovalsPage from '../pages/ApprovalsPage';
+import DepartmentsPage from '../pages/DepartmentsPage';
 
 function AdminPage() {
     const [errors, setErrors] = useState({});
+    // expose fetchErrors for children
+    const fetchErrors = async () => {
+        const token = localStorage.getItem('authToken');
+        try {
+            const response = await axiosInstance.get('/api/admin/checkErrors', {
+                headers: {Authorization: `Bearer ${token}`}
+            });
+            setErrors(response.data);
+        } catch (error) {
+            console.error('Error fetching admin errors', error);
+        }
+    };
     const [users, setUsers] = useState([]);
     const [selectedMenu, setSelectedMenu] = useState('');
 
@@ -65,6 +78,7 @@ function AdminPage() {
                 {selectedMenu === 'Leave Management' && <LeaveManagementPage/>}
                 {selectedMenu === 'Importer' && <ImporterPage/>}
                 {selectedMenu === 'Approve/Activate Users' && <ApprovalsPage/>}
+                {selectedMenu === 'Departments' && <DepartmentsPage refreshErrors={fetchErrors}/>}
                 {selectedMenu === '' && <h4>Admin Dashboard</h4>}
 
             </div>
