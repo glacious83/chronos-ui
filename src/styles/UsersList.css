@@ -6,3 +6,7 @@
 .error-row {
     background-color: #ffebee;    /* light red */
 }
+
+.pending-approval {
+    background-color: #fff9c4;
+}
