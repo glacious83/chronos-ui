@@ -6,6 +6,7 @@ import axiosInstance from '../services/axiosInstance';
 import '../styles/Admin.css';
 import ImporterPage from "./ImporterPage";
 import LeaveManagementPage from "./LeaveManagementPage";
+import ApprovalsPage from '../pages/ApprovalsPage';
 
 function AdminPage() {
     const [errors, setErrors] = useState({});
@@ -57,6 +58,7 @@ function AdminPage() {
                 {selectedMenu === 'Users List' && <UsersList users={users} setUsers={setUsers} />}
                 {selectedMenu === 'Leave Management' && <LeaveManagementPage />}
                 {selectedMenu === 'Importer' && <ImporterPage />}
+                {selectedMenu === 'Approve/Activate Users' && <ApprovalsPage />}
                 {selectedMenu === '' && <h4>Admin Dashboard</h4>}
 
             </div>
