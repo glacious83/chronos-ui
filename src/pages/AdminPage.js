@@ -54,7 +54,7 @@ function AdminPage() {
         <div className="admin-page-container">
             <AdminForm errors={errors} setSelectedMenu={setSelectedMenu} />
             <div className="admin-content">
-                {selectedMenu === 'Users List' && <UsersList users={users} />}
+                {selectedMenu === 'Users List' && <UsersList users={users} setUsers={setUsers} />}
                 {selectedMenu === 'Leave Management' && <LeaveManagementPage />}
                 {selectedMenu === 'Importer' && <ImporterPage />}
                 {selectedMenu === '' && <h4>Admin Dashboard</h4>}

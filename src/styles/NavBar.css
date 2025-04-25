@@ -29,11 +29,11 @@
     border-bottom: 2px solid white; /* Tab hover effect */
 }
 
-.MuiAppBar-root {
+.navbar-toolbar {
     background-color: #003841 !important;
 }
 
-.MuiIconButton-root {
+.nav-account-btn {
     background-color: #005F73 !important;
     color: white;
     border-radius: 50%;

@@ -79,6 +79,7 @@ function NavBar() {
                 </Typography>
 
                 <IconButton
+                    className="nav-account-btn"
                     size="large"
                     edge="end"
                     color="inherit"
