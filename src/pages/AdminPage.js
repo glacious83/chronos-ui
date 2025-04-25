@@ -8,6 +8,7 @@ import ImporterPage from "./ImporterPage";
 import LeaveManagementPage from "./LeaveManagementPage";
 import ApprovalsPage from '../pages/ApprovalsPage';
 import DepartmentsPage from '../pages/DepartmentsPage';
+import LocationsPage from "./LocationsPage";
 
 function AdminPage() {
     const [errors, setErrors] = useState({});
@@ -79,6 +80,7 @@ function AdminPage() {
                 {selectedMenu === 'Importer' && <ImporterPage/>}
                 {selectedMenu === 'Approve/Activate Users' && <ApprovalsPage/>}
                 {selectedMenu === 'Departments' && <DepartmentsPage refreshErrors={fetchErrors}/>}
+                {selectedMenu === 'Locations' && <LocationsPage refreshErrors={fetchErrors}/>}
                 {selectedMenu === '' && <h4>Admin Dashboard</h4>}
 
             </div>
