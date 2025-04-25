@@ -12,8 +12,10 @@ import {
     BeachAccess as LeaveIcon,
     ChevronLeft as ChevronLeftIcon,
     ChevronRight as ChevronRightIcon,
+    DeleteSweep as DeleteSweepIcon,
     Edit as EditIcon,
-    Delete as DeleteIcon
+    Delete as DeleteIcon,
+    Close as CloseIcon
 } from '@mui/icons-material';
 import TimeRegService from '../services/timeRegService';
 import ProjectService from '../services/projectService';
@@ -54,6 +56,10 @@ export default function TimeRegPage() {
     const [entryForm, setEntryForm] = useState({
         projectId: '', hours: '', description: '', workLocation: 'OFFICE'
     });
+
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [confirmMessage, setConfirmMessage] = useState('');
+    const [confirmAction, setConfirmAction] = useState(() => {});
 
     const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
     const [leaveDay, setLeaveDay] = useState(null);
@@ -193,9 +199,14 @@ export default function TimeRegPage() {
         }
     }
 
-    async function handleDeleteEntry(id) {
-        await TimeRegService.delete(id);
-        await fetchEntries();
+    function handleDeleteEntry(id) {
+        setConfirmMessage('Delete this entry?');
+        setConfirmAction(() => async () => {
+            await TimeRegService.delete(id);
+            await fetchEntries();
+            setConfirmOpen(false);
+        });
+        setConfirmOpen(true);
     }
 
     async function handleAddLeave() {
@@ -217,6 +228,20 @@ export default function TimeRegPage() {
     async function handleCancelLeave(leaveId) {
         await LeaveService.cancel(leaveId, userId);
         await fetchLeaves();
+    }
+
+    function deleteAllEntries(day) {
+        const dateStr = formatDateForApi(day);
+        setConfirmMessage(`Remove all entries for ${formatDate(day)}?`);
+        setConfirmAction(() => async () => {
+            const entries = timeEntries[dateStr] || [];
+            for (const e of entries) {
+                await TimeRegService.delete(e.id);
+            }
+            await fetchEntries();
+            setConfirmOpen(false);
+        });
+        setConfirmOpen(true);
     }
 
     return (
@@ -278,7 +303,16 @@ export default function TimeRegPage() {
                                         disabled={fullLeaveApproved || isWeekend(day) || isHoliday(day)}
                                         className={fullLeaveApproved || isWeekend(day) || isHoliday(day) ? 'disabled-icon' : ''}
                                         sx={{backgroundColor: 'transparent !important'}}
-                                    ><LeaveIcon/></IconButton>
+                                    ><LeaveIcon/>
+                                    </IconButton>
+                                    <IconButton
+                                        size="small"
+                                        onClick={() => deleteAllEntries(day)}
+                                        disabled={!timeEntries[key]?.length}
+                                        sx={{ backgroundColor: 'transparent !important' }}
+                                    >
+                                        <DeleteSweepIcon />
+                                    </IconButton>
                                 </Box>
                                 {holiday && (
                                     <Box className="holiday-banner">
@@ -307,6 +341,13 @@ export default function TimeRegPage() {
                                         <Typography variant="body2">
                                             {e.project?.name || e.projectId}: {e.workedHours}h
                                         </Typography>
+                                        <IconButton
+                                            size="small"
+                                            onClick={() => handleDeleteEntry(e.id)}
+                                            sx={{ backgroundColor: 'transparent !important' }}
+                                        >
+                                            <CloseIcon fontSize="small" />
+                                        </IconButton>
                                     </Box>
                                 ))}
                                 {leaves[key]?.map(l => (
@@ -372,6 +413,17 @@ export default function TimeRegPage() {
                         <Button variant="contained" onClick={handleAddLeave}>Yes</Button>
                     </DialogActions>
                 </Dialog>
+
+            <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
+                <DialogTitle>Confirmation</DialogTitle>
+                <DialogContent>
+                    <Typography>{confirmMessage}</Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setConfirmOpen(false)}>Cancel</Button>
+                    <Button onClick={confirmAction} color="error">Delete</Button>
+                </DialogActions>
+            </Dialog>
 
                 <Snackbar
                     open={openSnackbar}
