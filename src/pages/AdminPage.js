@@ -13,6 +13,7 @@ import WorkOrdersPage from "./WorkOrdersPage";
 import DMsPage from "./DMsPage";
 import ContractsPage from "./ContractsPage";
 import CompaniesPage from "./CompaniesPage";
+import RatesPage from "./RatesPage";
 
 function AdminPage() {
     const [errors, setErrors] = useState({});
@@ -89,6 +90,7 @@ function AdminPage() {
                 {selectedMenu === 'DMs' && <DMsPage refreshErrors={fetchErrors}/>}
                 {selectedMenu === 'Contracts' && <ContractsPage refreshErrors={fetchErrors}/>}
                 {selectedMenu === 'Companies' && <CompaniesPage refreshErrors={fetchErrors}/>}
+                {selectedMenu === 'Rates' && <RatesPage refreshErrors={fetchErrors}/>}
                 {selectedMenu === '' && <h4>Admin Dashboard</h4>}
 
             </div>
