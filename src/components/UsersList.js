@@ -17,7 +17,7 @@ import {
 } from '@mui/icons-material';
 import axiosInstance from '../services/axiosInstance';
 
-export default function UsersList({ users, setUsers }) {
+export default function UsersList({ users, setUsers, errorUsers = [] }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const [menuUserId, setMenuUserId] = useState(null);
 
@@ -173,9 +173,15 @@ export default function UsersList({ users, setUsers }) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {users.map(user => (
-                            <TableRow key={user.id}>
-                                <TableCell>{user.firstName}</TableCell>
+                        {users.map(user => {
+                            const hasError = errorUsers.some(e => e.id === user.id);
+
+                            return (
+                                <TableRow
+                                    key={user.id}
+                                    className={hasError ? 'error-row' : ''}
+                                >
+                                    <TableCell>{user.firstName}</TableCell>
                                 <TableCell>{user.middleName}</TableCell>
                                 <TableCell>{user.lastName}</TableCell>
                                 <TableCell>{user.email}</TableCell>
@@ -222,9 +228,10 @@ export default function UsersList({ users, setUsers }) {
                                         </MenuItem>
                                     </Menu>
                                 </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
+                    </TableRow>
+                    );
+                    })}
+                </TableBody>
                 </Table>
             </TableContainer>
 

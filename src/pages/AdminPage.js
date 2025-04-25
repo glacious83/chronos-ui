@@ -1,5 +1,5 @@
 // src/pages/AdminPage.js
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import AdminForm from '../components/AdminForm';
 import UsersList from '../components/UsersList';
 import axiosInstance from '../services/axiosInstance';
@@ -53,12 +53,18 @@ function AdminPage() {
 
     return (
         <div className="admin-page-container">
-            <AdminForm errors={errors} setSelectedMenu={setSelectedMenu} />
+            <AdminForm errors={errors} setSelectedMenu={setSelectedMenu}/>
             <div className="admin-content">
-                {selectedMenu === 'Users List' && <UsersList users={users} setUsers={setUsers} />}
-                {selectedMenu === 'Leave Management' && <LeaveManagementPage />}
-                {selectedMenu === 'Importer' && <ImporterPage />}
-                {selectedMenu === 'Approve/Activate Users' && <ApprovalsPage />}
+                {selectedMenu === 'Users List' &&
+                    <UsersList
+                        users={users}
+                        setUsers={setUsers}
+                        errorUsers={errors.userError || []}
+                    />
+                }
+                {selectedMenu === 'Leave Management' && <LeaveManagementPage/>}
+                {selectedMenu === 'Importer' && <ImporterPage/>}
+                {selectedMenu === 'Approve/Activate Users' && <ApprovalsPage/>}
                 {selectedMenu === '' && <h4>Admin Dashboard</h4>}
 
             </div>

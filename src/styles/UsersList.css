@@ -2,3 +2,7 @@
     padding: 4px !important;
     font-size: 0.75rem;
 }
+
+.error-row {
+    background-color: #ffebee;    /* light red */
+}
