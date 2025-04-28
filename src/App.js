@@ -7,6 +7,7 @@ import HomePage from './pages/HomePage';
 import AdminPage from './pages/AdminPage';
 import ImporterPage from "./pages/ImporterPage";
 import TimeRegPage from "./pages/TimeRegPage";
+import ReportsForm from "./components/ReportsForm";
 // import TimeRegPage from './pages/TimeRegPage'; // Placeholder for now
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/admin" element={<AdminPage />} />
                 <Route path="/admin/import" element={<ImporterPage />} />
+                <Route path="/admin/report" element={<ReportsForm />} />
                 <Route path="/timereg" element={<TimeRegPage />} />
             </Routes>
         </Router>

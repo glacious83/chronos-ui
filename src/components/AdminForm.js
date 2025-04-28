@@ -11,6 +11,7 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import BusinessIcon from '@mui/icons-material/Business';
 import ImportExportIcon from '@mui/icons-material/ImportExport';
+import AssessmentIcon   from '@mui/icons-material/Assessment';
 import '../styles/Admin.css';
 
 const menuItems = [
@@ -24,6 +25,7 @@ const menuItems = [
     {text: 'Contracts', icon: <WorkIcon/>, errorKey: 'contractError', subItems: []},
     {text: 'Companies', icon: <BusinessIcon/>, errorKey: 'companyError', subItems: []},
     {text: 'Importer', icon: <ImportExportIcon/>, errorKey: null, subItems: []},
+    {text: 'Reports', icon: <AssessmentIcon/>, errorKey: null, subItems: []},
 ];
 
 function AdminForm({errors, setSelectedMenu}) {

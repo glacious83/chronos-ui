@@ -15,6 +15,7 @@ import ContractsPage from "./ContractsPage";
 import CompaniesPage from "./CompaniesPage";
 import RatesPage from "./RatesPage";
 import HolidaysPage from "./HolidaysPage";
+import ReportsForm from "../components/ReportsForm";
 
 function AdminPage() {
     const [errors, setErrors] = useState({});
@@ -84,6 +85,7 @@ function AdminPage() {
                 }
                 {selectedMenu === 'Leave Management' && <LeaveManagementPage/>}
                 {selectedMenu === 'Importer' && <ImporterPage/>}
+                {selectedMenu === 'Reports' && <ReportsForm/>}
                 {selectedMenu === 'Approve/Activate Users' && <ApprovalsPage/>}
                 {selectedMenu === 'Departments' && <DepartmentsPage refreshErrors={fetchErrors}/>}
                 {selectedMenu === 'Locations' && <LocationsPage refreshErrors={fetchErrors}/>}
