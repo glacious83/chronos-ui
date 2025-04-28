@@ -8,7 +8,7 @@ import axiosInstance from "../services/axiosInstance";
 function LoginPage() {
     const navigate = useNavigate();
     const [error, setError] = useState('');
-    const { setUserName } = useContext(UserContext);
+    const { setUserName, setRoles } = useContext(UserContext);
 
     const handleLogin = async (employeeId, password) => {
         try {
@@ -19,8 +19,9 @@ function LoginPage() {
             if (token) {
                 localStorage.setItem('authToken', token);
                 localStorage.setItem('userId', userId); // Store userId
-                const userResponse = await axiosInstance.get(`/api/users/${userId}`);
-                setUserName(userResponse.data.firstName);
+                const { data } = await axiosInstance.get(`/api/users/${userId}`);
+                setUserName(data.firstName);
+                setRoles(data.roles.map(r => r.name));
                 navigate('/home');
             } else {
                 setError('No token received');
